@@ -2,7 +2,7 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import path from 'path';
+import path from 'path'; // This line is no longer needed, but leaving it is fine
 
 // Import routes and middleware
 import authRoutes from './routes/authRoutes';
@@ -20,7 +20,6 @@ const PORT = process.env.PORT || 5000;
 // Enable CORS for frontend
 app.use(cors({
   origin: ['http://localhost:5173', 'https://movies-tvshows-app.vercel.app'],
-  
   credentials: true, // To allow cookies
 }));
 
@@ -30,9 +29,9 @@ app.use(express.json());
 // Parse cookies
 app.use(cookieParser());
 
-// Serve static files from the "uploads" directory
-// This makes images accessible via URLs like http://localhost:5000/uploads/filename.jpg
-app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+// --- REMOVED LINE ---
+// The line below has been removed as we are using GCS, not local file serving.
+// app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // --- API Routes ---
 app.use('/api/auth', authRoutes);

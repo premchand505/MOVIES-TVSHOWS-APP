@@ -9,7 +9,9 @@ import {
 import { protect } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { movieSchema, updateMovieSchema } from '../validators/schemas';
-import upload from '../middleware/upload';
+// --- CHANGE IS HERE ---
+// Import both new middleware functions
+import { multerUpload, uploadToGcs } from '../middleware/upload';
 
 const router = Router();
 
@@ -21,15 +23,30 @@ router.use(protect);
 router
   .route('/')
   .get(getMovies)
-  // 'upload.single('poster')' handles a single file upload from a form field named 'poster'
-  .post(upload.single('poster'), validate(movieSchema), createMovie);
+  // --- CHANGE IS HERE ---
+  // We now run three middlewares for this route:
+  // 1. multerUpload: Parses the form data and finds the 'poster' file in memory.
+  // 2. uploadToGcs: Takes the file from memory, uploads to GCS, and adds the URL to req.file.path.
+  // 3. validate: Validates the text fields in req.body.
+  .post(
+    multerUpload.single('poster'), 
+    uploadToGcs, 
+    validate(movieSchema), 
+    createMovie
+  );
 
 // Routes for a specific movie by its ID
 router
   .route('/:id')
   .get(getMovieById)
-  // 'upload.single('poster')' is also used here for updating the movie poster
-  .put(upload.single('poster'), validate(updateMovieSchema), updateMovie)
+  // --- CHANGE IS HERE ---
+  // Apply the same three-middleware chain for updating the movie.
+  .put(
+    multerUpload.single('poster'), 
+    uploadToGcs, 
+    validate(updateMovieSchema), 
+    updateMovie
+  )
   .delete(deleteMovie);
 
 export default router;

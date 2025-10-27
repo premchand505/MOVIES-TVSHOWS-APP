@@ -27,7 +27,7 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Mov
     header: "Poster",
     cell: ({ row }) => {
       const posterUrl = row.original.poster;
-      const fullUrl = posterUrl ? `http://localhost:5000${posterUrl}` : 'https://via.placeholder.com/40x60';
+      const fullUrl = posterUrl ? posterUrl : 'https://via.placeholder.com/40x60';
       return <img src={fullUrl} alt="Poster" className="h-16 w-auto rounded" />;
     },
   },
