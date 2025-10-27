@@ -65,9 +65,10 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
     // Send token in an httpOnly cookie for security
     res.cookie('token', token, {
-      httpOnly: true, // The cookie is not accessible via client-side JavaScript
-      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-      maxAge: 3600000, // 1 hour in milliseconds
+      httpOnly: true,
+      secure: true, // Should always be true in production
+      sameSite: 'none', // Allows cross-domain cookie sending
+      maxAge: 3600000,
     });
     
     // Send user info back to the frontend (without the password)
