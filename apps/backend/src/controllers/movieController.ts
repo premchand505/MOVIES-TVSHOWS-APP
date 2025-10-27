@@ -13,8 +13,8 @@ export const createMovie = async (req: AuthRequest, res: Response, next: NextFun
       return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    // Get the path to the uploaded file, if it exists
-    const posterPath = req.file ? `/uploads/${req.file.filename}` : undefined;
+    // Correctly gets the full public URL from GCS
+    const posterPath = req.file ? (req.file as any).path : undefined;
 
     const movie = await prisma.movie.create({
       data: {
@@ -44,15 +44,11 @@ export const getMovies = async (req: AuthRequest, res: Response, next: NextFunct
       return res.status(401).json({ message: 'User not authenticated' });
     }
     
-    // For pagination
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 20;
     const skip = (page - 1) * limit;
-
-    // For search
     const searchTerm = req.query.search as string || '';
 
-    // UPDATED: Search logic now includes the 'year' field and a wildcard '*' for partial matching.
     const whereClause = {
       userId: userId,
       ...(searchTerm && {
@@ -70,7 +66,7 @@ export const getMovies = async (req: AuthRequest, res: Response, next: NextFunct
       skip: skip,
       take: limit,
       orderBy: {
-        createdAt: 'desc', // Show newest first
+        createdAt: 'desc',
       },
     });
 
@@ -89,7 +85,6 @@ export const getMovies = async (req: AuthRequest, res: Response, next: NextFunct
     next(error);
   }
 };
-
 
 // --- Get a single Movie by ID ---
 export const getMovieById = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -117,8 +112,6 @@ export const updateMovie = async (req: AuthRequest, res: Response, next: NextFun
     const { id } = req.params;
     const userId = req.user?.userId;
     
-    
-    // Check if the movie exists and belongs to the user
     const existingMovie = await prisma.movie.findFirst({
       where: { id: parseInt(id), userId: userId },
     });
@@ -127,7 +120,9 @@ export const updateMovie = async (req: AuthRequest, res: Response, next: NextFun
       return res.status(404).json({ message: 'Movie not found or you do not have permission to edit it' });
     }
 
-    const posterPath = req.file ? `/uploads/${req.file.filename}` : req.body.poster;
+    // --- CHANGE IS HERE ---
+    // Use the full GCS path from the file object, just like in createMovie
+    const posterPath = req.file ? (req.file as any).path : req.body.poster;
 
     const updatedMovie = await prisma.movie.update({
       where: { id: parseInt(id) },
@@ -146,7 +141,6 @@ export const deleteMovie = async (req: AuthRequest, res: Response, next: NextFun
     const { id } = req.params;
     const userId = req.user?.userId;
 
-    // Check if the movie exists and belongs to the user
     const movieToDelete = await prisma.movie.findFirst({
       where: { id: parseInt(id), userId: userId },
     });
