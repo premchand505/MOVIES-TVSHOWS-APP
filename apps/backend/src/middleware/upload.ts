@@ -4,15 +4,15 @@ import MulterGoogleCloudStorage from 'multer-google-storage';
 import { Request } from 'express';
 
 const GCS_BUCKET_NAME = process.env.GCS_BUCKET_NAME;
-const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID; // <-- Add this
+const GCP_PROJECT_ID = process.env.GCP_PROJECT_ID; // We need this
 
-if (!GCS_BUCKET_NAME || !GCP_PROJECT_ID) { // <-- Check for it
+if (!GCS_BUCKET_NAME || !GCP_PROJECT_ID) { // Check for both
   throw new Error('GCS_BUCKET_NAME or GCP_PROJECT_ID environment variable is not set.');
 }
 
 // Explicitly create a new GCS client instance with the Project ID
 const gcs = new Storage({
-  projectId: GCP_PROJECT_ID, // <-- Pass the Project ID here
+  projectId: GCP_PROJECT_ID,
 });
 
 const storage = new MulterGoogleCloudStorage({
