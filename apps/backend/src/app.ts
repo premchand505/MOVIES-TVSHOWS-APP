@@ -19,7 +19,8 @@ const PORT = process.env.PORT || 5000;
 // Middleware setup
 // Enable CORS for frontend
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend URL
+  origin: ['http://localhost:5173', 'https://movies-tvshows-app.vercel.app'],
+  
   credentials: true, // To allow cookies
 }));
 

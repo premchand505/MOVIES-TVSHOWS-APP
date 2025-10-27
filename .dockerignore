@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.turbo
+.git
+.gitignore
+Dockerfile
+
+apps/backend/prisma.config.ts
