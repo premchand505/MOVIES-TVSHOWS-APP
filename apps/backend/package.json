@@ -5,10 +5,9 @@
   "main": "dist/app.js",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/app.js",
-    "prisma": "dotenv -e .env -- npx prisma",
-    "postinstall": "npx prisma generate"
+    "prisma": "dotenv -e .env -- npx prisma"
   },
   "keywords": [],
   "author": "",
