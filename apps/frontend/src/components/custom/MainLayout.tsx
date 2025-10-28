@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import apiClient from '@/services/api';
 import { Button } from '@/components/ui/button';
 import { Film, LogOut } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle'; // Import the new component
+import { ThemeToggle } from './ThemeToggle'; 
 
 const MainLayout = () => {
   const { user, setUser } = useAuth();
@@ -31,11 +31,11 @@ const MainLayout = () => {
               MyMovies
             </span>
           </div>
-          <div className="flex items-center gap-2"> {/* Reduced gap for tighter grouping */}
+          <div className="flex items-center gap-2"> 
             <span className="hidden text-sm text-muted-foreground sm:inline mr-2">
               Welcome, {user?.name || 'User'}
             </span>
-            <ThemeToggle /> {/* Add the toggle button here */}
+            <ThemeToggle /> {/*  toggle button here */}
             <Button variant="ghost" size="icon" onClick={handleLogout} aria-label="Logout">
               <LogOut className="h-5 w-5" />
             </Button>

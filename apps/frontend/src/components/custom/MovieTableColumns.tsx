@@ -1,4 +1,4 @@
-// src/components/custom/MovieTableColumns.tsx
+
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
@@ -36,7 +36,7 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Mov
           height={96} // h-24 = 96px
         />
       ) : (
-        <div className="h-24 w-16 bg-secondary rounded-md flex items-center  justify-center"> {/* Matched placeholder size */}
+        <div className="h-24 w-16 bg-secondary rounded-md flex items-center  justify-center">
             <ImageOff className="h-8 w-8 text-muted-foreground" />
         </div>
       );

@@ -120,7 +120,7 @@ export const updateMovie = async (req: AuthRequest, res: Response, next: NextFun
       return res.status(404).json({ message: 'Movie not found or you do not have permission to edit it' });
     }
 
-    // --- CHANGE IS HERE ---
+    
     // Use the full GCS path from the file object, just like in createMovie
     const posterPath = req.file ? (req.file as any).path : req.body.poster;
 

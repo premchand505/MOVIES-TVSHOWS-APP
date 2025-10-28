@@ -7,11 +7,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" // We are using MySQL
-  url      = env("DATABASE_URL") // The connection string is loaded from the .env file
+  provider = "mysql" 
+  url      = env("DATABASE_URL") 
 }
 
-// User model for authentication
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -39,6 +39,7 @@ model Movie {
   // Relation to the User model
   user   User @relation(fields: [userId], references: [id])
   userId Int
-// 2. Add this index to make these fields searchable
+
+// added these index to make these fields searchable
   @@fulltext([title, director, type,year])
 }

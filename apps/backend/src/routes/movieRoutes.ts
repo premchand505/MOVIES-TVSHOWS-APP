@@ -9,7 +9,7 @@ import {
 import { protect } from '../middleware/auth';
 import { validate } from '../middleware/validate';
 import { movieSchema, updateMovieSchema } from '../validators/schemas';
-// --- CHANGE IS HERE ---
+
 // Import both new middleware functions
 import { multerUpload, uploadToGcs } from '../middleware/upload';
 
@@ -23,7 +23,7 @@ router.use(protect);
 router
   .route('/')
   .get(getMovies)
-  // --- CHANGE IS HERE ---
+  
   // We now run three middlewares for this route:
   // 1. multerUpload: Parses the form data and finds the 'poster' file in memory.
   // 2. uploadToGcs: Takes the file from memory, uploads to GCS, and adds the URL to req.file.path.
@@ -39,7 +39,7 @@ router
 router
   .route('/:id')
   .get(getMovieById)
-  // --- CHANGE IS HERE ---
+
   // Apply the same three-middleware chain for updating the movie.
   .put(
     multerUpload.single('poster'), 

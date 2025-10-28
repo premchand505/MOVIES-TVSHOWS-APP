@@ -26,8 +26,8 @@ const multerUpload = multer({
 
 // 3. Create our new custom middleware for GCS upload
 const uploadToGcs = (req: Request, res: Response, next: NextFunction) => {
-  // If no file is present, or if it's an update (PUT)
-  // and the poster isn't being changed, skip to the next middleware.
+
+  // If no file is present, or if it's an update and the poster isn't being changed, skip to the next middleware.
   if (!req.file) {
     return next();
   }
@@ -53,14 +53,17 @@ const uploadToGcs = (req: Request, res: Response, next: NextFunction) => {
 
   blobStream.on('finish', () => {
     // The file upload is complete.
-    // Make the file public (if your bucket is private by default)
+
+    // Make the file public (if  bucket is private by default)
     blob.makePublic().then(() => {
       // Create the public URL
+
+
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
       
       // IMPORTANT: Overwrite req.file.path with the public GCS URL.
       // Your movieController already reads from (req.file as any).path
-      // so this will work without changing the controller.
+     
       (req.file as any).path = publicUrl;
       
       // All good, move to the next middleware (the controller)

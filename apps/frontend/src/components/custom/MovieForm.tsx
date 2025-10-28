@@ -25,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 // Define the form's validation schema using Zod
 const movieFormSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  // CORRECTED: The field is required by default. Removing the params object fixes the error.
+  // The field is required by default. Removing the params object fixes the error.
   type: z.enum(['Movie', 'TV Show']),
   director: z.string().min(1, 'Director is required'),
   year: z.string().min(4, 'Year is required').max(10),
