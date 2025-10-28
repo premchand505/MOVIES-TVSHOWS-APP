@@ -1,8 +1,9 @@
+// src/components/custom/MovieTableColumns.tsx
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
 import { Movie } from "@repo/types"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, ImageOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,43 +15,58 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-// Define the function signatures for our actions
 interface GetColumnsProps {
   onEdit: (movie: Movie) => void;
   onDelete: (movie: Movie) => void;
 }
 
-// Convert the columns array into a function that accepts our action handlers
 export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Movie>[] => [
   {
     accessorKey: "poster",
     header: "Poster",
     cell: ({ row }) => {
       const posterUrl = row.original.poster;
-      const fullUrl = posterUrl ? posterUrl : 'https://via.placeholder.com/40x60';
-      return <img src={fullUrl} alt="Poster" className="h-16 w-auto rounded" />;
+      const title = row.original.title;
+      return posterUrl ? (
+        <img 
+          src={posterUrl} 
+          alt={`Poster for ${title}`} 
+          className="h-40 w-auto object-cover rounded-md aspect-2/3" // Increased height
+          width={64} // Adjusted width for 2/3 aspect ratio
+          height={96} // h-24 = 96px
+        />
+      ) : (
+        <div className="h-24 w-16 bg-secondary rounded-md flex items-center  justify-center"> {/* Matched placeholder size */}
+            <ImageOff className="h-8 w-8 text-muted-foreground" />
+        </div>
+      );
     },
   },
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => <span className="font-semibold text-md ">{row.original.title}</span>,
   },
   {
     accessorKey: "type",
     header: "Type",
+    
   },
   {
     accessorKey: "director",
     header: "Director",
+       
   },
   {
     accessorKey: "year",
     header: "Year",
+       
   },
   {
     id: "actions",
     cell: ({ row }) => {
       const movie = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -62,12 +78,10 @@ export const getColumns = ({ onEdit, onDelete }: GetColumnsProps): ColumnDef<Mov
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* Call the onEdit function when clicked */}
             <DropdownMenuItem onClick={() => onEdit(movie)}>
               Edit
             </DropdownMenuItem>
-            {/* Call the onDelete function when clicked */}
-            <DropdownMenuItem onClick={() => onDelete(movie)} className="text-red-500">
+            <DropdownMenuItem onClick={() => onDelete(movie)} className="text-destructive focus:bg-destructive/10 focus:text-destructive">
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>

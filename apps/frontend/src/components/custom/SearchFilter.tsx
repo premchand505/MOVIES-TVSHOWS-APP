@@ -21,12 +21,13 @@ const SearchFilter = ({ onSearchChange }: SearchFilterProps) => {
   }, [query, onSearchChange]);
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex  flex-col gap-2 justify-center items-center">
+      <h1>Search here</h1>
       <Input
         placeholder="Search by title, director, or type..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="max-w-sm"
+        className="max-w-sm "
       />
     </div>
   );

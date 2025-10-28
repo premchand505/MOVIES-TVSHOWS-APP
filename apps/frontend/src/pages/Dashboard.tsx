@@ -1,13 +1,13 @@
+// src/pages/Dashboard.tsx
 import { useState } from 'react';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import { MovieTable } from '@/components/custom/MovieTable';
-import { getColumns } from '@/components/custom/MovieTableColumns'; // Updated import
+import { getColumns } from '@/components/custom/MovieTableColumns';
 import { Button } from '@/components/ui/button';
 import { MovieForm } from '@/components/custom/MovieForm';
 import apiClient from '@/services/api';
 import { Movie } from '@repo/types';
-import SearchFilter from '@/components/custom/SearchFilter'; 
-
+import SearchFilter from '@/components/custom/SearchFilter';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,15 +18,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { PlusCircle } from 'lucide-react';
 
 const DashboardPage = () => {
-const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const { movies, isLoading, hasMore, loadMore, setMovies } = useInfiniteScroll(searchTerm);
-  
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // State to hold the movie currently being edited or deleted
   const [editingMovie, setEditingMovie] = useState<Movie | null>(null);
   const [deletingMovie, setDeletingMovie] = useState<Movie | null>(null);
 
@@ -34,13 +32,11 @@ const [searchTerm, setSearchTerm] = useState('');
     setIsSubmitting(true);
     try {
       if (editingMovie) {
-        // --- UPDATE LOGIC ---
         const response = await apiClient.put(`/movies/${editingMovie.id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
         setMovies(prev => prev.map(m => m.id === editingMovie.id ? response.data : m));
       } else {
-        // --- CREATE LOGIC ---
         const response = await apiClient.post('/movies', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
@@ -60,7 +56,7 @@ const [searchTerm, setSearchTerm] = useState('');
     try {
       await apiClient.delete(`/movies/${deletingMovie.id}`);
       setMovies(prev => prev.filter(m => m.id !== deletingMovie.id));
-      setDeletingMovie(null); // Close the dialog
+      setDeletingMovie(null);
     } catch (error) {
       console.error('Failed to delete movie:', error);
       alert('Failed to delete movie. Please try again.');
@@ -71,7 +67,7 @@ const [searchTerm, setSearchTerm] = useState('');
     setEditingMovie(movie);
     setIsFormOpen(true);
   };
-  
+
   const openFormForNew = () => {
     setEditingMovie(null);
     setIsFormOpen(true);
@@ -81,32 +77,39 @@ const [searchTerm, setSearchTerm] = useState('');
     setIsFormOpen(false);
     setEditingMovie(null);
   };
-  
-  // Memoize columns to prevent re-renders
+
   const columns = getColumns({ onEdit: openFormForEdit, onDelete: setDeletingMovie });
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Your Collection</h1>
-        <Button onClick={openFormForNew}>Add New</Button>
+    <div className="container py-8 md:py-12 bg-background text-foreground">
+      <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:justify-between mb-8 md:px-5">
+        <div >
+          <h1 className="text-3xl font-bold text-center tracking-tighter md:text-4xl">Your Collection</h1>
+          <p className="text-muted-foreground text-center mt-1">Browse, search, and manage your movies and TV shows.</p>
+        </div>
+        <Button onClick={openFormForNew} className="flex items-center gap-2">
+          <PlusCircle className="h-5 w-5"/>
+          <span >Add New Entry</span>
+        </Button>
       </div>
 
-<SearchFilter onSearchChange={setSearchTerm} />
-      <MovieTable columns={columns} data={movies} />
+      <SearchFilter onSearchChange={setSearchTerm} />
+      
+      <div className="mt-8 px-10">
+        <MovieTable columns={columns} data={movies} />
+      </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-8">
         {hasMore && (
-          <Button onClick={loadMore} disabled={isLoading}>
+          <Button onClick={loadMore} disabled={isLoading} variant="secondary">
             {isLoading ? 'Loading...' : 'Load More'}
           </Button>
         )}
         {!hasMore && movies.length > 0 && (
-          <p className="text-muted-foreground">You've reached the end!</p>
+          <p className="text-muted-foreground text-sm">You've reached the end of your collection.</p>
         )}
       </div>
 
-      {/* Reusable Movie Form Dialog */}
       {isFormOpen && (
         <MovieForm
           isOpen={isFormOpen}
@@ -117,7 +120,6 @@ const [searchTerm, setSearchTerm] = useState('');
         />
       )}
 
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={!!deletingMovie} onOpenChange={() => setDeletingMovie(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -128,7 +130,7 @@ const [searchTerm, setSearchTerm] = useState('');
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>Continue</AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
